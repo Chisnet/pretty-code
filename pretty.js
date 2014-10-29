@@ -17,7 +17,7 @@
                     var children = '';
                     var key_num=0, key_count = Object.keys(data).length;
                     for(child in data) {
-                        children += '<li><span class="key">' + child + ':</span> ' + this.parse_json(data[child]) + (key_num<key_count-1 ? ',' : '') + '</li>';
+                        children += '<li><span class="key">"' + child + '":</span> ' + this.parse_json(data[child]) + (key_num<key_count-1 ? ',' : '') + '</li>';
                         key_num++;
                     }
                     result = '{' + ((children != '') ? '<ul>' + children + '</ul>' : '') + '}';
