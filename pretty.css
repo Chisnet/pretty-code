@@ -1,0 +1,29 @@
+/* General Styles */
+.pretty_output {
+    font-family: monospace;
+    font-size: 13px;
+}
+.pretty_output ul {
+    margin: 0;
+    padding-left: 40px;
+}
+.pretty_output li {
+    list-style: none;
+}
+
+/* JSON Styles */
+.pretty_json .key {
+    font-weight: bold;
+}
+.pretty_json .string {
+    color: #33aa33;
+}
+.pretty_json .number {
+    color: #3333aa;
+}
+.pretty_json .boolean {
+    color: #999999;
+}
+.pretty_json .null {
+    color: #aa3333;
+}

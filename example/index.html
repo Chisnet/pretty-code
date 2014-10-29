@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Pretty JSON Example</title>
+        <link rel="stylesheet" href="../pretty.css"/>
+    </head>
+    <body>
+        <script src="../pretty.js"></script>
+        <script>
+            var json_object = {
+                name: 'John Spartan',
+                age: 21,
+                married: false,
+                pet_names: [
+                    'Snuffles',
+                    'Pinky',
+                    'Brain',
+                    'Meow Meow'
+                ],
+                address: {
+                    address_1: '99 Westlake Road',
+                    address_2: null,
+                    town: 'Someville',
+                    county: 'Nowhereshire',
+                    postcode: 'NE1C ATV'
+                }
+            };
+            var result = pretty.parse(json_object, 'json');
+            document.write(result);
+        </script>
+    </body>
+</html>

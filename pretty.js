@@ -3,7 +3,7 @@
         parse: function(data, data_type) {
             var func_name = 'parse_' + data_type;
             try {
-                return '<div class="pretty_' + data_type + '">' + this[func_name](data) + '</div>';
+                return '<div class="pretty_output pretty_' + data_type + '">' + this[func_name](data) + '</div>';
             }
             catch(e) {
                 return false;
@@ -17,7 +17,7 @@
                     var children = '';
                     var key_num=0, key_count = Object.keys(data).length;
                     for(child in data) {
-                        children += '<li><span class="key">' + child + '</span>: ' + this.parse_json(data[child]) + (key_num<key_count-1 ? ',' : '') + '</li>';
+                        children += '<li><span class="key">' + child + ':</span> ' + this.parse_json(data[child]) + (key_num<key_count-1 ? ',' : '') + '</li>';
                         key_num++;
                     }
                     result = '{' + ((children != '') ? '<ul>' + children + '</ul>' : '') + '}';
