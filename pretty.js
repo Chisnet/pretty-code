@@ -44,7 +44,7 @@
         }
     };
     if(typeof define === 'function' && define.amd) {
-        define(pretty);
+        define(function(){return pretty});
     }
     else {
         window.pretty = pretty;
