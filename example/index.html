@@ -6,6 +6,7 @@
     </head>
     <body>
         <script src="../pretty.js"></script>
+        <h1>JSON</h1>
         <script>
             var json_object = {
                 name: 'John Spartan',
@@ -26,6 +27,27 @@
                 }
             };
             var result = pretty.parse(json_object, 'json');
+            document.write(result);
+        </script>
+        <h1>CSS</h1>
+        <script>
+            var css_string = [
+            "body {",
+            "    background: #fff;",
+            "    color: rgba(23,23,23,0.9);",
+            "    font-family: Arial, sans-serif;",
+            "}",
+            "#container {",
+            "    width: 800px;",
+            "    margin: 0 auto;",
+            "}",
+            ".box {",
+            "    width: 200px;",
+            "    height: 200px;",
+            "    border: 1px solid white;",
+            "}"
+            ].join('\n');
+            var result = pretty.parse(css_string, 'css');
             document.write(result);
         </script>
     </body>
