@@ -53,8 +53,8 @@
         },
         parse_css: function(data) {
             var result = '';
-            var selector_level = 0;
-            var unprocessed_text = '';
+            var string_type = 'selector';
+            var unused_string = '';
 
             // First remove any newlines and compress whitespace
             var css_string = data.replace(/(\r\n|\n|\r)/g,'');
@@ -65,26 +65,39 @@
             // Loop through the array
             for(var i=0; i<css_array.length; i++) {
                 var element = css_array[i];
-                console.log(element);
                 if(['{','}',';'].indexOf(element) >= 0) {
                     // If the element is one of our 3 new line points react accordingly
                     switch(element) {
                         case '{':
-                            result += unprocessed_text + element + '<ul>';
-                            unprocessed_text = '';
+                            result += '<div>' + unused_string + ' {' + '<ul>';
+                            unused_string = '';
+                            string_type = 'declaration';
                             break;
                         case '}':
-                            result += '</ul>' + element;
+                            result += '</ul>' + element + '</div>';
+                            string_type = 'selector';
                             break;
                         case ';':
-                            result += '<li>' + unprocessed_text + ';</li>';
-                            unprocessed_text = '';
+                            result += '<li>' + unused_string + ';</li>';
+                            unused_string = '';
                             break;
                     }
                 }
                 else {
-                    // Otherwise do nothing
-                    unprocessed_text += element;
+                    // Otherwise add spans based on the type of string
+                    if(element != '') {
+                        if(string_type == 'selector') {
+                            // TODO - It could also be a comment
+                            unused_string += '<span class="selector">' + element.trim() + '</span>';
+                        }
+                        else {
+                            var declaration_parts = element.split(':');
+                            console.log(declaration_parts);
+                            var declaration_property = declaration_parts[0].trim();
+                            var declaration_value = declaration_parts.splice(0).join('').trim();
+                            unused_string += '<span class="property">' + declaration_property + '</span>: <span class="value">' + declaration_value + '</span>';
+                        }
+                    }
                 }
             }
 
