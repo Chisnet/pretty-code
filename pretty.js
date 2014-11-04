@@ -1,5 +1,23 @@
-/* Pretty Code v0.1 */
+/* Pretty Code v0.11 */
 (function(window){
+    var escape_html = function(string) {
+        var escaped_string = '';
+        // Create map of replacements
+        var html_replacements = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#x27;',
+            '`': '&#x60;'
+        };
+        // Find and replace any occurences
+        escaped_string = string.replace(/&|<|>|"|'|`/g, function(match) {
+            return html_replacements[match];
+        });
+
+        return escaped_string;
+    };
     var pretty = {
         parse: function(data, data_type) {
             var func_name = 'parse_' + data_type;
@@ -42,7 +60,7 @@
                     break;
                 case 'string':
                     // String need additional quotes to be valid JSON
-                    result = '<span class="string">"' + data + '"</span>';
+                    result = '<span class="string">"' + escape_html(data) + '"</span>';
                     break;
                 default:
                     // Everything else can be simply displayed as is
