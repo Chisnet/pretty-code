@@ -27,3 +27,14 @@
 .pretty_json .null {
     color: #cc3333;
 }
+
+/* CSS Styles */
+.pretty_css .selector {
+    color: #cc3333;
+}
+.pretty_css .property {
+    color: #3333cc;
+}
+.pretty_css .value {
+    color: #33aa33;
+}

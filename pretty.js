@@ -112,7 +112,8 @@
                             var declaration_parts = element.split(':');
                             console.log(declaration_parts);
                             var declaration_property = declaration_parts[0].trim();
-                            var declaration_value = declaration_parts.splice(0).join('').trim();
+                            declaration_parts.splice(0,1);
+                            var declaration_value = declaration_parts.join('').trim();
                             unused_string += '<span class="property">' + declaration_property + '</span>: <span class="value">' + declaration_value + '</span>';
                         }
                     }
