@@ -1,4 +1,4 @@
-/* Pretty Code v0.11 */
+/* Pretty Code v0.12 */
 (function(window){
     var escape_html = function(string) {
         var escaped_string = '';
@@ -74,11 +74,18 @@
             var string_type = 'selector';
             var unused_string = '';
 
+            // Strip comments for the moment, they complicate things
+            var css_string = data.replace(/(\/\*([\s\S]*?)\*\/)/g,'');
+
             // First remove any newlines and compress whitespace
-            var css_string = data.replace(/(\r\n|\n|\r)/g,'');
+            css_string = css_string.replace(/(\r\n|\n|\r)/g,'');
             css_string = css_string.replace(/\s{2,}/g, ' ');
+
             // Split into an array based on the preferred new line points
             css_array = css_string.split(/({|}|;)/);
+
+            // Remove non-elements from the array
+            css_array = css_array.filter(function(e){return ['',' '].indexOf(e) < 0})
             
             // Loop through the array
             for(var i=0; i<css_array.length; i++) {
@@ -103,19 +110,15 @@
                 }
                 else {
                     // Otherwise add spans based on the type of string
-                    if(element != '') {
-                        if(string_type == 'selector') {
-                            // TODO - It could also be a comment
-                            unused_string += '<span class="selector">' + element.trim() + '</span>';
-                        }
-                        else {
-                            var declaration_parts = element.split(':');
-                            console.log(declaration_parts);
-                            var declaration_property = declaration_parts[0].trim();
-                            declaration_parts.splice(0,1);
-                            var declaration_value = declaration_parts.join('').trim();
-                            unused_string += '<span class="property">' + declaration_property + '</span>: <span class="value">' + declaration_value + '</span>';
-                        }
+                    if(string_type == 'selector') {
+                        unused_string += '<span class="selector">' + element.trim() + '</span>';
+                    }
+                    else {
+                        var declaration_parts = element.split(':');
+                        var declaration_property = declaration_parts[0].trim();
+                        declaration_parts.splice(0,1);
+                        var declaration_value = declaration_parts.join('').trim();
+                        unused_string += '<span class="property">' + declaration_property + '</span>: <span class="value">' + declaration_value + '</span>';
                     }
                 }
             }
