@@ -30,6 +30,8 @@
             }
         },
         parse_json: function(data) {
+            // TODO - Attempt to load JSON first in case we've been given stringified JSON
+
             var result = '';
             // Find the type of JSON data we've been given
             var value_type = data == null ? 'null' : data.constructor.name.toLowerCase();
@@ -70,6 +72,10 @@
             return result;
         },
         parse_css: function(data) {
+            // TODO - Attempt to be smart about ownership of in-line comments, unless we're processing compressed CSS when we can't tell.
+            // TODO - Make comments in selectors valid HTML (i.e. a list item)
+            // TODO - Split selectors
+
             var result = '';
             var in_selector = false;
             var in_comment = false;
@@ -77,10 +83,11 @@
             var unused_string = '';
             
             var data_array = css_string.split(/({|}|;|\r\n|\n|\r|\/\*|\*\/)/);
-            data_array = data_array.filter(function(e){return ['',' '].indexOf(e) < 0});
+            data_array = data_array.filter(function(e){return (!/^( )+$/.test(e) && e != '');});
 
             for(var i=0; i<data_array.length; i++) {
                 var element = data_array[i];
+
                 if(!/(\r\n|\n|\r)/.test(element)) {
                     element = element.trim();
                 }
@@ -93,7 +100,7 @@
                 else if(/^\*\//.test(element)) {
                     // End of comment
                     if(multiline_comment) {
-                        result += '<p class="comment">' + unused_string + ' ' + element + '</p>';
+                        result += '<div class="comment">' + unused_string + ' ' + element + '</div>';
                     }
                     else {
                         result += '<span class="comment">' + unused_string + ' ' + element + '</span>';
@@ -110,10 +117,46 @@
                         multiline_comment = true;
                     }
                 }
+                // Selector start
+                else if(element == '{') {
+                    if(in_comment) {
+                        unused_string += ' ' + element;
+                    }
+                    else {
+                        result += '<div>' + unused_string + ' {' + '<ul>';
+                        unused_string = '';
+                        in_selector = true;
+                    }
+                }
+                // Selector end
+                else if(element == '}') {
+                    if(in_comment) {
+                        unused_string += ' ' + element;
+                    }
+                    else {
+                        result += '</ul>' + element + '</div>';
+                        in_selector = false;
+                    }
+                }
+                // Declaration
+                else if(element == ';') {
+                    result += '<li>' + unused_string + ';</li>';
+                    unused_string = '';
+                }
                 // Everything else?
                 else {
                     if(in_comment) {
                         unused_string += element;
+                    }
+                    else if(!in_selector){
+                        unused_string += '<span class="selector">' + element + '</span>';
+                    }
+                    else {
+                        var declaration_parts = element.split(':');
+                        var declaration_property = declaration_parts[0].trim();
+                        declaration_parts.splice(0,1);
+                        var declaration_value = declaration_parts.join('').trim();
+                        unused_string += '<span class="property">' + declaration_property + '</span>: <span class="value">' + declaration_value + '</span>';
                     }
                 }
             }
