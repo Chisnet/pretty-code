@@ -38,3 +38,6 @@
 .pretty_css .value {
     color: #33aa33;
 }
+.pretty_css .comment {
+    color: #999999;
+}

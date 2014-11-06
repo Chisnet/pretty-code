@@ -71,54 +71,49 @@
         },
         parse_css: function(data) {
             var result = '';
-            var string_type = 'selector';
+            var in_selector = false;
+            var in_comment = false;
+            var multiline_comment = false;
             var unused_string = '';
-
-            // Strip comments for the moment, they complicate things
-            var css_string = data.replace(/(\/\*([\s\S]*?)\*\/)/g,'');
-
-            // First remove any newlines and compress whitespace
-            css_string = css_string.replace(/(\r\n|\n|\r)/g,'');
-            css_string = css_string.replace(/\s{2,}/g, ' ');
-
-            // Split into an array based on the preferred new line points
-            css_array = css_string.split(/({|}|;)/);
-
-            // Remove non-elements from the array
-            css_array = css_array.filter(function(e){return ['',' '].indexOf(e) < 0})
             
-            // Loop through the array
-            for(var i=0; i<css_array.length; i++) {
-                var element = css_array[i];
-                if(['{','}',';'].indexOf(element) >= 0) {
-                    // If the element is one of our 3 new line points react accordingly
-                    switch(element) {
-                        case '{':
-                            result += '<div>' + unused_string + ' {' + '<ul>';
-                            unused_string = '';
-                            string_type = 'declaration';
-                            break;
-                        case '}':
-                            result += '</ul>' + element + '</div>';
-                            string_type = 'selector';
-                            break;
-                        case ';':
-                            result += '<li>' + unused_string + ';</li>';
-                            unused_string = '';
-                            break;
-                    }
+            var data_array = css_string.split(/({|}|;|\r\n|\n|\r|\/\*|\*\/)/);
+            data_array = data_array.filter(function(e){return ['',' '].indexOf(e) < 0});
+
+            for(var i=0; i<data_array.length; i++) {
+                var element = data_array[i];
+                if(!/(\r\n|\n|\r)/.test(element)) {
+                    element = element.trim();
                 }
-                else {
-                    // Otherwise add spans based on the type of string
-                    if(string_type == 'selector') {
-                        unused_string += '<span class="selector">' + element.trim() + '</span>';
+                // Comments
+                if(/^\/\*/.test(element)) {
+                    // Start of comment
+                    unused_string += element + ' ';
+                    in_comment = true;
+                }
+                else if(/^\*\//.test(element)) {
+                    // End of comment
+                    if(multiline_comment) {
+                        result += '<p class="comment">' + unused_string + ' ' + element + '</p>';
                     }
                     else {
-                        var declaration_parts = element.split(':');
-                        var declaration_property = declaration_parts[0].trim();
-                        declaration_parts.splice(0,1);
-                        var declaration_value = declaration_parts.join('').trim();
-                        unused_string += '<span class="property">' + declaration_property + '</span>: <span class="value">' + declaration_value + '</span>';
+                        result += '<span class="comment">' + unused_string + ' ' + element + '</span>';
+                    }
+                    unused_string = '';
+                    in_comment = false;
+                    multiline_comment = false;
+                }
+                // New lines
+                else if(/(\r\n|\n|\r)/.test(element)) {
+                    // We only care about new-lines in comments to keep any multi-line comment formatting
+                    if(in_comment) {
+                        unused_string += '<br/>';
+                        multiline_comment = true;
+                    }
+                }
+                // Everything else?
+                else {
+                    if(in_comment) {
+                        unused_string += element;
                     }
                 }
             }
