@@ -30,7 +30,9 @@
             }
         },
         parse_json: function(data) {
-            // TODO - Attempt to load JSON first in case we've been given stringified JSON
+            // Attempt a load so we can handle Objects and Strings
+            try {data = JSON.load(data);}
+            catch(e) {}
 
             var result = '';
             // Find the type of JSON data we've been given
@@ -73,7 +75,6 @@
         },
         parse_css: function(data) {
             // TODO - Attempt to be smart about ownership of in-line comments, unless we're processing compressed CSS when we can't tell.
-            // TODO - Make comments in selectors valid HTML (i.e. a list item)
             // TODO - Split selectors
 
             var result = '';
@@ -103,7 +104,12 @@
                         result += '<div class="comment">' + unused_string + ' ' + element + '</div>';
                     }
                     else {
-                        result += '<span class="comment">' + unused_string + ' ' + element + '</span>';
+                        if(in_selector) {
+                            result += '<li><span class="comment">' + unused_string + ' ' + element + '</span></li>';
+                        }
+                        else {
+                            result += '<span class="comment">' + unused_string + ' ' + element + '</span>';
+                        }
                     }
                     unused_string = '';
                     in_comment = false;
@@ -160,7 +166,6 @@
                     }
                 }
             }
-
             return result;
         },
     };
