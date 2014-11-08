@@ -1,4 +1,4 @@
-/* Pretty Code v0.12 */
+/* Pretty Code v0.13 */
 (function(window){
     var escape_html = function(string) {
         var escaped_string = '';
