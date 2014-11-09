@@ -1,4 +1,4 @@
-/* Pretty Code v0.13 */
+/* Pretty Code v0.14 */
 (function(window){
     var escape_html = function(string) {
         var escaped_string = '';
@@ -75,7 +75,6 @@
         },
         parse_css: function(data) {
             // TODO - Attempt to be smart about ownership of in-line comments, unless we're processing compressed CSS when we can't tell.
-            // TODO - Split selectors
 
             var result = '';
             var in_selector = false;
@@ -155,7 +154,7 @@
                         unused_string += element;
                     }
                     else if(!in_selector){
-                        unused_string += '<span class="selector">' + element + '</span>';
+                        unused_string += '<span class="selector">' + element.split(',').join('</span>, <span class="selector">') + '</span>';
                     }
                     else {
                         var declaration_parts = element.split(':');
