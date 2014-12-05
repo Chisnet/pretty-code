@@ -31,7 +31,7 @@
         },
         parse_json: function(data) {
             // Attempt a load so we can handle Objects and Strings
-            try {data = JSON.load(data);}
+            try {data = JSON.parse(data);}
             catch(e) {}
 
             var result = '';
