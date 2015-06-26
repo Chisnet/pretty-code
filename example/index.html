@@ -54,5 +54,25 @@
             var result = pretty.parse(css_string, 'css');
             document.write(result);
         </script>
+        <h1>YAML</h1>
+        <script>
+            var yaml_string = [
+            "---",
+            "# Some example YAML   ",
+            "name: Dave  ",
+            "age: 12",
+            "married: yes",
+            "dead: FALSE",
+            "children:",
+            "   - Stephanie",
+            "   - Harold",
+            "languages:",
+            "   french: Good",
+            "   spanish:",
+            "      Terrible"
+            ].join('\n');
+            var result = pretty.parse(yaml_string, 'yaml');
+            document.write(result);
+        </script>
     </body>
 </html>

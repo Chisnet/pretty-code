@@ -41,3 +41,14 @@
 .pretty_css .comment {
     color: #999999;
 }
+
+/* YAML Styles */
+.pretty_yaml .comment {
+    color: #999999;
+}
+.pretty_css .property {
+    color: #3333cc;
+}
+.pretty_css .value {
+    color: #33aa33;
+}

@@ -82,7 +82,7 @@
             var multiline_comment = false;
             var unused_string = '';
             
-            var data_array = css_string.split(/({|}|;|\r\n|\n|\r|\/\*|\*\/)/);
+            var data_array = data.split(/({|}|;|\r\n|\n|\r|\/\*|\*\/)/);
             data_array = data_array.filter(function(e){return (!/^( )+$/.test(e) && e != '');});
 
             for(var i=0; i<data_array.length; i++) {
@@ -167,6 +167,32 @@
             }
             return result;
         },
+        parse_yaml: function(data) {
+            // TODO - Handling for {} style YAML
+
+            var result = '';
+            var indent_level = 0;
+            var indent_width = 0;
+            
+            var data_array = data.split(/(?:\r\n|\n|\r)/);
+            data_array = data_array.filter(function(e){return (!/^( )+$/.test(e) && e != '');});
+
+            for(var i=0; i<data_array.length; i++) {
+                var element = data_array[i];
+
+                // Start
+                if(element == '---') {
+                    result += '<div class="start">---</div>';
+                }
+                // Comments
+                else if(/^#/.test(element)) {
+                    result += '<div class="comment">' + element + '</div>';
+                }
+                
+            }
+
+            return result;
+        }
     };
     if(typeof define === 'function' && define.amd) {
         define(function(){return pretty});
