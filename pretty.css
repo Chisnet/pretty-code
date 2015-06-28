@@ -46,9 +46,9 @@
 .pretty_yaml .comment {
     color: #999999;
 }
-.pretty_css .property {
-    color: #3333cc;
+.pretty_yaml .key {
+    color: #cc3333;
 }
-.pretty_css .value {
+.pretty_yaml .value {
     color: #33aa33;
 }

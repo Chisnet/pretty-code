@@ -172,13 +172,17 @@
 
             var result = '';
             var indent_level = 0;
-            var indent_width = 0;
+            var indent_widths = [];
+            var indent_start = false;
+
+            var leading_spaces_regex = /^(\s)*/g;
             
             var data_array = data.split(/(?:\r\n|\n|\r)/);
             data_array = data_array.filter(function(e){return (!/^( )+$/.test(e) && e != '');});
 
             for(var i=0; i<data_array.length; i++) {
                 var element = data_array[i];
+                element = this.rtrim(element);
 
                 // Start
                 if(element == '---') {
@@ -188,10 +192,55 @@
                 else if(/^#/.test(element)) {
                     result += '<div class="comment">' + element + '</div>';
                 }
-                
-            }
+                // Key on own line (indentation)
+                else if(/:$/.test(element)) {
+                    var leading_spaces = element.match(leading_spaces_regex)[0].length;
 
+                    // indent_level += 1;
+                    // indent_start = true;
+
+                    // result += '<div><span class="key">' + element + '</span>' + '<ul>';
+
+                    result += '';
+                }
+                // Key with value line
+                else if(/^(.*):(.*)$/.test(element)) {
+                    var matched_string = element.match(/^(.*):(.*)$/);
+                    var key = matched_string[1];
+                    var value = matched_string[2].trim();
+                    var leading_spaces = key.match(leading_spaces_regex)[0].length;
+
+                    // Trim the space from around the key after we've determined the leading spaces
+                    key = key.trim();
+
+                    if (leading_spaces == 0) {
+                        if (indent_level > 0) {
+                            result += '</ul></div>';
+                        }
+                        // Reset all indentation
+                        indent_level = 0;
+                        indent_widths = [];
+                        indent_start = false;
+                        // Simple element in a dev
+                        result += '<div><span class="key">' + key + ':</span> <span class="value">' + value + '</span></div>';
+                    }
+                    else {
+                        if(indent_start) {
+                            indent_level += 1;
+                            indent_widths.push(leading_spaces);
+                            indent_start = false;
+                        }
+                        result += '<li><span class="key">' + key + ':</span> <span class="value">' + value + '</span></li>';
+                    }
+
+                }
+
+            }
             return result;
+        },
+        rtrim: function(str) {
+            var rtrim_regex = /[\s\uFEFF\xA0]+$/g;
+            return str.replace(rtrim_regex, '');
         }
     };
     if(typeof define === 'function' && define.amd) {
